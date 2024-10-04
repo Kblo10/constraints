@@ -177,6 +177,38 @@ INSERT INTO vendas(quantidade, preco)
 SELECT * FROM vendas;
           
 -- 14.FOREIGN KEY com ON DELETE CASCADE: Crie uma tabela cursos e uma tabela matriculas que exclua as matrículas se o curso for excluído.
+CREATE TABLE IF NOT EXISTS cursos(
+id INT AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS matricula(
+id INT AUTO_INCREMENT PRIMARY KEY,
+num_matricula VARCHAR(30),
+curso_id INT,
+FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE
+);
+
+insert into cursos(nome) values ('Cursuá');
+
+insert into matricula(num_matricula, curso_id) values ('123456', 1);
+select * from matricula
+join cursos ON matricula.curso_id = cursos.id;
+
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM cursos WHERE cursos.nome = 'cursuá';
+SELECT * FROM matricula;
+SET SQL_SAFE_UPDATES = 1;
+
+
 -- 15.UNIQUE INDEX: Crie um índice único na tabela usuarios que garanta que não existam duplicatas no campo cpf.
+DESC usuarios;
+
+ALTER TABLE usuarios
+	ADD COLUMN cpf VARCHAR(14);
+    
+CREATE UNIQUE INDEX idx_cpf_unico 
+	ON usuarios(cpf); 
+    
 -- 16.CHECK com função: Crie uma tabela produtos que utilize uma função personalizada para validar que o preço é positivo.
 -- 17.TRIGGER com múltiplas ações: Crie um trigger que atualiza o estoque de produtos toda vez que uma venda for registrada.
