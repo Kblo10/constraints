@@ -61,9 +61,6 @@ CREATE TABLE IF NOT EXISTS transacoes (
 id INT AUTO_INCREMENT PRIMARY KEY,
 statuss VARCHAR(10) DEFAULT 'Pendente'
 );
-
-insert into transacoes(statuss)
-	values ('');
     
 INSERT INTO transacoes() VALUES();
     
@@ -135,6 +132,9 @@ DROP TABLE comentarios;
 INSERT INTO posts(conteudo) VALUES ('Foto na praia');
 INSERT INTO comentarios(msg, post_id) VALUES ('top top', 1);
 
+SELECT * FROM posts
+JOIN comentarios ON comentarios.post_id = posts.id;
+
 -- deletando os comentarios e posts
 DELETE FROM posts WHERE id = 1;
 SELECT * FROM posts;
@@ -148,13 +148,15 @@ select comentarios.*, posts.conteudo
 -- 12.SET DEFAULT: Crie uma tabela reservas onde a coluna data_reserva tem o valor padrão da data atual.
 CREATE TABLE IF NOT EXISTS reservas(
 id INT AUTO_INCREMENT PRIMARY KEY,
-data_reserva DATETIME DEFAULT CURRENT_TIMESTAMP
+data_reserva DATETIME DEFAULT CURRENT_TIMESTAMP -- default para vir padrão uma data quando for adicionado uma reserva
 );
 
 select * from reservas;
 
+-- inserindo valores de forma escrita
 INSERT INTO reservas(data_reserva) VALUES ('2024-12-24 23:00');
 
+-- inserindo valores vazios
 INSERT INTO reservas() VALUES();
 
 -- 13.CHECK CONSTRAINT (com múltiplas colunas): Crie uma tabela vendas com uma coluna quantidade e preco, onde a soma deve ser maior que 0.
@@ -168,8 +170,11 @@ CHECK (quantidade + preco > 0) -- o CHECK funciona como uma checagem para dar TR
 INSERT INTO vendas(quantidade, preco)
 	 VALUES(0, '0.00');
 
+-- inserindo os valores corretamente agora
 INSERT INTO vendas(quantidade, preco)
 	 VALUES(1, '222.00');
+     
+SELECT * FROM vendas;
           
 -- 14.FOREIGN KEY com ON DELETE CASCADE: Crie uma tabela cursos e uma tabela matriculas que exclua as matrículas se o curso for excluído.
 -- 15.UNIQUE INDEX: Crie um índice único na tabela usuarios que garanta que não existam duplicatas no campo cpf.
