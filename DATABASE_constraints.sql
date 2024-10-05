@@ -160,7 +160,7 @@ INSERT INTO reservas(data_reserva) VALUES ('2024-12-24 23:00');
 INSERT INTO reservas() VALUES();
 
 -- 13.CHECK CONSTRAINT (com múltiplas colunas): Crie uma tabela vendas com uma coluna quantidade e preco, onde a soma deve ser maior que 0.
-CREATE TABLE vendas(
+CREATE TABLE IF NOT EXISTS vendas(
 quantidade INT,
 preco DECIMAL(10,2),
 CHECK (quantidade + preco > 0) -- o CHECK funciona como uma checagem para dar TRUE numa condicao
@@ -189,26 +189,48 @@ curso_id INT,
 FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE
 );
 
-insert into cursos(nome) values ('Cursuá');
+-- DESCOBRIR O NOME DAS CONSTRAINTS
+select * from information_schema.referential_constraints
+where constraint_schema = 'constraints';
 
-insert into matricula(num_matricula, curso_id) values ('123456', 1);
+-- EXCLUINDO UMA CONSTRAINT
+alter table matricula
+drop foreign key matricula_ibfk_1;
+
+-- ADICIONANDO UMA NOVA CHAVE ESTRANGEIRA COM UM CONSTRAINT on delete set null 
+alter table matricula
+add foreign key (curso_id) references cursos(id) on delete set null; -- quando um registro pai for apagado vai excluir os registros filhos e deixar como nulos. 
+
+insert into cursos(nome) values ('Cursuá1');
+
+insert into matricula(num_matricula, curso_id) values ('123457', 2);
+
 select * from matricula
 join cursos ON matricula.curso_id = cursos.id;
 
-SET SQL_SAFE_UPDATES = 0;
+
+SET SQL_SAFE_UPDATES = 0; -- comando para desativar uma proteção que impede operações potencialmente perigosas. quando quiser deixar ativada eh soh mudar para o numero 1
 DELETE FROM cursos WHERE cursos.nome = 'cursuá';
 SELECT * FROM matricula;
 SET SQL_SAFE_UPDATES = 1;
 
 
 -- 15.UNIQUE INDEX: Crie um índice único na tabela usuarios que garanta que não existam duplicatas no campo cpf.
-DESC usuarios;
+-- descricao de tudo da tabela
+DESC usuarios; 
 
 ALTER TABLE usuarios
 	ADD COLUMN cpf VARCHAR(14);
     
+-- criando o INDEX
 CREATE UNIQUE INDEX idx_cpf_unico 
 	ON usuarios(cpf); 
     
+-- Testando a query. Para ter certeza de que funcionou pode-se testar um outro INSERT com o mesmo cpf para provar que a nao aceita numeros repetidos. 
+INSERT INTO usuarios(nome, data_criacao, cpf)
+	 VALUES ('Marco','2024-09-10 18:00:00','099.098.097-99');
+    
 -- 16.CHECK com função: Crie uma tabela produtos que utilize uma função personalizada para validar que o preço é positivo.
+
+
 -- 17.TRIGGER com múltiplas ações: Crie um trigger que atualiza o estoque de produtos toda vez que uma venda for registrada.
